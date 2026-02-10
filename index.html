@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>住宅診断カルテ：営業デモ機能付</title>
+    <title>住宅診断カルテ：鶴岡空き家ビジネス版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #F2EFE9; color: #333333; font-family: 'Noto Serif JP', serif; line-height: 1.7; }
-        .item-card { border-bottom: 1px solid #D1CDC7; padding: 1.2rem 0; }
+        .item-card { border-bottom: 1px solid #D1CDC7; padding: 1rem 0; }
         .advice-box { background-color: #EAE5DD; border-radius: 4px; font-size: 0.7rem; color: #666; margin-top: 0.5rem; padding: 0.6rem; border-left: 2px solid #888; }
         .camera-label { display: inline-flex; align-items: center; background: #333; color: white; padding: 6px 12px; border-radius: 2px; font-size: 10px; cursor: pointer; margin-top: 10px; }
         .preview-img { width: 50px; height: 50px; object-fit: cover; border-radius: 2px; margin-top: 5px; border: 1px solid #ccc; }
         
+        /* カルテ・ビジネス仕様 */
         .karte-border { border: 2px solid #333; padding: 25px; background: #fff; position: relative; }
-        .stamp-box { width: 65px; height: 65px; border: 1px solid #c2410c; color: #c2410c; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 50%; transform: rotate(-15deg); font-weight: bold; border-width: 2px; }
-        
-        /* 赤ペン注釈風スタイル */
-        .red-note { color: #d00; border: 1px solid #d00; padding: 2px 4px; font-size: 10px; transform: rotate(-2deg); display: inline-block; font-weight: bold; margin-left: 5px; }
+        .stamp-box { width: 65px; height: 65px; border: 2px solid #c2410c; color: #c2410c; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 50%; transform: rotate(-15deg); font-weight: bold; }
+        .red-note { color: #d00; border: 1px solid #d00; padding: 1px 4px; font-size: 9px; transform: rotate(-1deg); display: inline-block; font-weight: bold; margin-left: 5px; }
 
         input[type="checkbox"] {
             appearance: none; width: 20px; height: 20px; border: 1px solid #888; border-radius: 50%;
@@ -32,49 +31,229 @@
 </head>
 <body class="p-6 md:p-12 pb-40">
 
-    <header class="max-w-3xl mx-auto mb-12">
-        <h1 class="text-2xl md:text-3xl tracking-widest leading-snug font-bold italic text-zinc-700">住宅
-</h1>
-        <h2 class="text-xl md:text-2xl font-bold tracking-tighter">鶴岡空き家診断ナビゲーター</h2>
-        <div class="flex gap-2 mt-4 no-print">
-            <button onclick="loadSample()" class="text-[10px] bg-orange-700 text-white px-3 py-1 rounded hover:bg-orange-800 transition">★ サンプル読込（デモ用）</button>
-            <button onclick="location.reload()" class="text-[10px] bg-zinc-300 px-3 py-1 rounded">クリア</button>
+    <header class="max-w-3xl mx-auto mb-10">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-2xl md:text-3xl tracking-widest leading-snug font-bold">住宅診断カルテ作成</h1>
+                <p class="text-[10px] mt-1 opacity-70">二級建築士・電気工事士・設備士による専門診断</p>
+            </div>
+            <div class="flex flex-col gap-2">
+                <button onclick="loadSample()" class="bg-orange-700 text-white text-[10px] px-4 py-2 rounded shadow hover:bg-orange-800 transition font-bold">★ デモ用サンプル読込</button>
+                <button onclick="location.reload()" class="bg-zinc-200 text-zinc-600 text-[10px] px-4 py-2 rounded">クリア</button>
+            </div>
         </div>
     </header>
 
-    <main id="main-form" class="max-w-3xl mx-auto space-y-12">
+    <main class="max-w-3xl mx-auto space-y-16">
+
         <section>
-            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-slate-700">01 外部環境</h2>
-            <div class="space-y-1">
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m1" data-label="道路幅員" data-pro="0" data-diy="0"><label for="m1" class="ml-4 text-sm font-semibold">前面道路幅員（除雪対応）</label></div></div>
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m5" data-label="外壁劣化" data-pro="800000" data-diy="150000"><label for="m5" class="ml-4 text-sm font-semibold">外壁のひび割れ・塗装劣化</label></div></div>
+            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-slate-700">01 外部環境診断</h2>
+            <div class="grid grid-cols-1 gap-1">
+                <div class="item-card flex items-start"><input type="checkbox" id="m1" data-label="道路幅員" data-pro="0" data-diy="0"><label for="m1" class="ml-4 text-sm font-semibold">前面道路幅員（4m以上・除雪車進入）</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m2" data-label="駐車場拡幅" data-pro="300000" data-diy="50000"><label for="m2" class="ml-4 text-sm font-semibold">駐車場の拡幅可能性（並列駐車）</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m3" data-label="災害リスク" data-pro="0" data-diy="0"><label for="m3" class="ml-4 text-sm font-semibold">ハザードマップ該当状況</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m4" data-label="庭木管理" data-pro="100000" data-diy="20000"><label for="m4" class="ml-4 text-sm font-semibold">庭木・外構の管理状況</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m5" data-label="外壁劣化" data-pro="800000" data-diy="150000"><label for="m5" class="ml-4 text-sm font-semibold text-red-800">外壁のひび割れ・塗装劣化</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m6" data-label="境界杭" data-pro="0" data-diy="0"><label for="m6" class="ml-4 text-sm font-semibold">隣地境界杭の確認</label></div>
             </div>
         </section>
 
         <section>
-            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-red-900">02 構造・雨漏り</h2>
+            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-red-900">02 構造・雨漏り診断</h2>
             <div class="space-y-1">
-                <div class="item-card flex flex-col">
-                    <div class="flex items-start"><input type="checkbox" id="m7" data-label="雨漏り跡" data-pro="500000" data-diy="50000"><label for="m7" class="ml-4 text-sm font-bold text-red-800">雨漏りの形跡（天井・小屋裏）</label></div>
-                    <div class="advice-box">建築士所見：小屋裏の垂木に変色。早期治療を推奨。</div>
+                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m7" data-label="雨漏り跡" data-pro="500000" data-diy="50000"><label for="m7" class="ml-4 text-sm font-bold text-red-800">雨漏りの形跡（天井・小屋裏）</label></div></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m8" data-label="基礎クラック" data-pro="200000" data-diy="30000"><label for="m8" class="ml-4 text-sm font-semibold">基礎の構造的なひび割れ</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m9" data-label="床沈み" data-pro="300000" data-diy="50000"><label for="m9" class="ml-4 text-sm font-semibold text-red-800 font-bold">床のたわみ・沈み（土台腐朽）</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m10" data-label="残置物多量" data-pro="300000" data-diy="80000"><label for="m10" class="ml-4 text-sm font-semibold">残置物による片付け費用</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m11" data-label="建具歪み" data-pro="150000" data-diy="20000"><label for="m11" class="ml-4 text-sm font-semibold">サッシ・建具の開閉不全</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m12" data-label="床下環境" data-pro="100000" data-diy="10000"><label for="m12" class="ml-4 text-sm font-semibold text-red-800">床下の湿気・カビ・腐朽臭</label></div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-blue-900">03 雪国適応性診断</h2>
+            <div class="space-y-1">
+                <div class="item-card flex items-start"><input type="checkbox" id="m13" data-label="落雪スペース" data-pro="200000" data-diy="30000"><label for="m13" class="ml-4 text-sm font-semibold">落雪スペースの有無</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m14" data-label="融雪稼働" data-pro="150000" data-diy="20000"><label for="m14" class="ml-4 text-sm font-semibold">既存融雪設備の動作状況</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m15" data-label="雪害破損" data-pro="100000" data-diy="20000"><label for="m15" class="ml-4 text-sm font-semibold">雪荷重による雨樋・軒先破損</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m16" data-label="水抜き栓故障" data-pro="50000" data-diy="5000"><label for="m16" class="ml-4 text-sm font-bold text-blue-800">水抜き栓の動作（凍結防止）</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m17" data-label="気密不足" data-pro="150000" data-diy="50000"><label for="m17" class="ml-4 text-sm font-semibold">北西風に対する風除室・気密</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m18" data-label="換気口高" data-pro="0" data-diy="10000"><label for="m18" class="ml-4 text-sm font-semibold">積雪時を考慮した換気口高さ</label></div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-green-900">04 設備インフラ診断</h2>
+            <div class="space-y-1">
+                <div class="item-card flex items-start"><input type="checkbox" id="m19" data-label="浴室改修" data-pro="1000000" data-diy="150000"><label for="m19" class="ml-4 text-sm font-semibold">浴室：タイルからUBへの更新</label></div>
+                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m20" data-label="単相3線欠如" data-pro="120000" data-diy="0"><label for="m20" class="ml-4 text-sm font-bold text-red-800 underline">電気：単相3線式への引込要否</label></div></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m21" data-label="給湯器更新" data-pro="200000" data-diy="30000"><label for="m21" class="ml-4 text-sm font-bold text-red-800">給湯器の更新・ガス種確認</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m22" data-label="下水・浄化槽" data-pro="300000" data-diy="50000"><label for="m22" class="ml-4 text-sm font-semibold">排水：浄化槽または下水接続</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m23" data-label="分電盤更新" data-pro="60000" data-diy="10000"><label for="m23" class="ml-4 text-sm font-semibold">分電盤の老朽度・空き回路</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m24" data-label="配管漏水" data-pro="100000" data-diy="10000"><label for="m24" class="ml-4 text-sm font-semibold">給水管のサビ・漏水兆候</label></div>
+            </div>
+        </section>
+
+        <section class="pb-20">
+            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-orange-800">05 資産価値・特記事項</h2>
+            <div class="space-y-1">
+                <div class="item-card flex items-start"><input type="checkbox" id="m25" data-label="良質古材" data-pro="-200000" data-diy="-50000"><label for="m25" class="ml-4 text-sm font-semibold text-orange-700 font-bold">保存価値の高い古材（梁・柱）</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m26" data-label="意匠建具" data-pro="0" data-diy="0"><label for="m26" class="ml-4 text-sm font-semibold text-orange-700">アンティーク建具・型板ガラス</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m27" data-label="蔵土間" data-pro="0" data-diy="0"><label for="m27" class="ml-4 text-sm font-semibold">蔵・土間などの活用可能性</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m28" data-label="日当たり" data-pro="0" data-diy="0"><label for="m28" class="ml-4 text-sm font-semibold text-orange-700">冬場の日射熱取得の良さ</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m29" data-label="光回線" data-pro="50000" data-diy="10000"><label for="m29" class="ml-4 text-sm font-semibold">通信環境・光回線の引込状況</label></div>
+                <div class="item-card flex items-start"><input type="checkbox" id="m30" data-label="バリアフリー" data-pro="100000" data-diy="30000"><label for="m30" class="ml-4 text-sm font-semibold">生活動線の改修容易性</label></div>
+                <div class="item-card flex items-start border-none"><input type="checkbox" id="m31" data-label="佇まい" data-pro="0" data-diy="0"><label for="m31" class="ml-4 text-sm font-bold italic font-serif">建物の全体的な佇まいと直感</label></div>
+            </div>
+            <label class="camera-label"><span>📷 写真を撮影して記録</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="preview(this)"></label>
+            <div class="flex gap-2 mt-2 preview-container"></div>
+        </section>
+
+    </main>
+
+    <div class="fixed bottom-0 left-0 w-full p-8 bg-[#F2EFE9]/95 backdrop-blur-md flex justify-center border-t border-zinc-200 gap-4 no-print">
+        <button onclick="calculate()" class="bg-black text-white px-10 py-5 tracking-widest text-xs shadow-2xl font-bold uppercase hover:scale-105 transition">診断カルテを発行する</button>
+    </div>
+
+    <div id="modal" class="hidden fixed inset-0 bg-zinc-900/95 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div id="pdf-area" class="karte-border max-w-lg w-full shadow-2xl my-auto">
+            <div class="flex justify-between items-start border-b-2 border-zinc-800 pb-4 mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tighter">住宅診断カルテ</h2>
+                    <p class="text-[8px] opacity-70 italic font-sans uppercase">Akiya Audit Case Report</p>
                 </div>
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m9" data-label="床沈み" data-pro="300000" data-diy="50000"><label for="m9" class="ml-4 text-sm font-semibold text-red-800">床のたわみ・土台の腐朽</label></div></div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-blue-900">03 雪国適応性</h2>
-            <div class="space-y-1">
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m15" data-label="雪害破損" data-pro="100000" data-diy="20000"><label for="m15" class="ml-4 text-sm font-semibold text-blue-800">雪荷重による雨樋・軒先破損</label></div></div>
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m16" data-label="水抜き栓故障" data-pro="50000" data-diy="5000"><label for="m16" class="ml-4 text-sm font-bold text-blue-800">水抜き栓の動作不全</label></div></div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-xl mb-4 border-b border-black pb-2 font-bold text-green-900">04 設備・ライフライン</h2>
-            <div class="space-y-1">
-                <div class="item-card flex flex-col">
-                    <div class="flex items-start"><input type="checkbox" id="m20" data-label="単相3線欠如" data-pro="120000" data-diy="0"><label for="m20" class="ml-4 text-sm font-bold text-red-800 underline">電気：単相3線式への引込が必要</label></div>
-                    <div class="advice-box">電気工事士所見：エアコン利用等に必須。DIY不可。</div>
+                <div class="text-right">
+                    <div id="reportDate" class="text-[9px] mb-1"></div>
+                    <div class="stamp-box">住宅の<br>主治医</div>
                 </div>
-                <div class="item-card flex flex-col"><div class="flex items-start"><input type="checkbox" id="m21" data-label="給湯器更新" data-pro="200000" data-diy="30000"><label for="m21" class="ml-4 text-sm
+            </div>
+            
+            <div id="demo-badge" class="hidden text-center mb-4"><span class="bg-orange-100 text-orange-800 text-[10px] px-6 py-1 font-bold rounded-full tracking-widest">★ 営業デモ用サンプル</span></div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4 text-[9px] border-b border-zinc-100 pb-4 font-sans uppercase">
+                <div><span class="opacity-60">診断物件：</span>鶴岡市（サンプル）</div>
+                <div><span class="opacity-60">担当：</span>建築士・設備士</div>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div class="p-3 bg-zinc-50 border border-zinc-200">
+                    <p class="text-[8px] font-bold mb-1 opacity-50 uppercase tracking-widest">修繕処方（概算見積り）</p>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <span class="text-xs">業者フルリノベ</span>
+                        <span id="proCost" class="text-lg font-bold">¥0</span>
+                    </div>
+                    <div class="flex justify-between items-baseline text-orange-800 font-bold border-t border-zinc-200 pt-1">
+                        <span class="text-xs">DIY最適化（抑制案）</span>
+                        <span id="diyCost" class="text-xl font-bold">¥0</span>
+                    </div>
+                </div>
+
+                <div id="checked-items-summary" class="text-[9px] leading-relaxed bg-white p-3 border border-dotted border-zinc-300">
+                    </div>
+            </div>
+
+            <div class="border-t-2 border-zinc-800 pt-4">
+                <p class="text-[9px] font-bold mb-2 uppercase tracking-widest text-zinc-400">主治医の診断所見</p>
+                <div id="doctor-note" class="text-[10px] leading-relaxed text-zinc-700 italic bg-yellow-50 p-2 border-l-2 border-yellow-400">
+                    </div>
+            </div>
+
+            <div class="mt-6 p-3 bg-zinc-800 text-white text-center rounded no-print cursor-pointer hover:bg-zinc-700 transition" onclick="sendLine()">
+                <p class="text-[10px] font-bold tracking-widest">詳細な見積り・施工のご相談（LINE）</p>
+            </div>
+
+            <div class="flex flex-col gap-3 mt-6 no-print">
+                <button onclick="savePDF()" class="bg-zinc-100 text-zinc-800 py-4 text-xs font-bold border border-zinc-300">PDFとしてカルテを保存</button>
+                <button onclick="location.reload()" class="text-[10px] opacity-40 underline text-center">入力をリセット</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // サンプルデータ読込
+        function loadSample() {
+            // 一旦全クリア
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+
+            // 代表的な項目にチェック
+            const sampleItems = ['m5', 'm7', 'm16', 'm20', 'm25'];
+            sampleItems.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.checked = true;
+            });
+
+            window.isDemo = true;
+            calculate();
+        }
+
+        function calculate() {
+            let totalPro = 0; let totalDiy = 0;
+            let checks = [];
+            document.querySelectorAll('input:checked').forEach(c => {
+                totalPro += parseInt(c.dataset.pro || 0);
+                totalDiy += parseInt(c.dataset.diy || 0);
+                checks.push(c.dataset.label);
+            });
+
+            document.getElementById('proCost').innerText = "¥" + totalPro.toLocaleString();
+            document.getElementById('diyCost').innerText = "¥" + totalDiy.toLocaleString();
+            document.getElementById('reportDate').innerText = "診断日：" + new Date().toLocaleDateString();
+            
+            const summary = document.getElementById('checked-items-summary');
+            const doctorNote = document.getElementById('doctor-note');
+            const demoBadge = document.getElementById('demo-badge');
+
+            if(window.isDemo) {
+                demoBadge.classList.remove('hidden');
+                summary.innerHTML = `<strong>指摘事項（サンプル抜粋）:</strong><br>
+                    ・外壁劣化（要塗装） <span class="red-note">雨樋付近に浸食あり</span><br>
+                    ・雨漏り跡 <span class="red-note">小屋裏の垂木に腐朽あり</span><br>
+                    ・水抜き栓動作不全 <span class="red-note">要パッキン交換</span><br>
+                    ・単相3線欠如 <span class="red-note">エアコン設置に必須工事</span><br>
+                    ・良質古材 <span class="red-note">ケヤキ梁の活用を推奨</span>`;
+                doctorNote.innerHTML = "「建物自体は立派な造りですが、ライフラインの更新が急務です。特に電気系統と水抜き栓の修理を行えば、快適に住み始められるポテンシャルがあります。当方ですべて施工可能です。」";
+            } else {
+                demoBadge.classList.add('hidden');
+                summary.innerHTML = "<strong>指摘・チェック所見:</strong><br>" + (checks.length ? checks.join(' / ') : "特筆すべき異常なし");
+                doctorNote.innerHTML = "「現地調査の結果に基づき診断しました。赤文字の項目は優先的な修繕を推奨します。詳細な施工プランについてはLINEよりお問い合わせください。」";
+            }
+
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function savePDF() {
+            const btns = document.querySelectorAll('.no-print');
+            btns.forEach(b => b.style.display = 'none');
+            const element = document.getElementById('pdf-area');
+            const opt = {
+                margin: 5, filename: '住宅診断カルテ.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                btns.forEach(b => b.style.display = 'flex');
+                window.isDemo = false;
+            });
+        }
+
+        function preview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                const container = input.parentElement.nextElementSibling;
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result; img.className = 'preview-img';
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function sendLine() {
+            alert("LINEアプリを起動します。コピーした内容を貼り付けて送信してください。");
+            window.location.href = `https://line.me/R/ti/p/@YOUR_ID`; 
+        }
+    </script>
+</body>
+</html>
